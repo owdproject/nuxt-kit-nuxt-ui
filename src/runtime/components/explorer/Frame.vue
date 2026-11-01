@@ -46,7 +46,7 @@ const hasNavSlot = computed(() => typeof slots.nav === 'function')
   >
     <div :class="['flex flex-col h-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg overflow-hidden', props.chromePadding === false ? '' : 'p-2']">
       <div class="desktop-explorer-frame__header-stack">
-        <slot v-slot:nav v-if="hasNavSlot" name="nav" />
+        <slot v-if="hasNavSlot" name="nav" />
         <Nav v-else>
           <template #prepend>
             <slot name="nav-prepend" />

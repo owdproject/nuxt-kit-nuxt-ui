@@ -1,6 +1,6 @@
 {
   "name": "@owdproject/nuxt-kit-nuxt-ui",
-  "version": "4.0.0-alpha.3",
+  "version": "4.0.0-alpha.4",
   "description": "Nuxt UI for OWD themes: dialogs (always) and optional DesktopExplorer* UI (requires @owdproject/nuxt-module-fs; use { explorer: false } for dialogs only).",
   "license": "MIT",
   "type": "module",

@@ -7,7 +7,7 @@ import Frame from './Frame.vue'
 import Chrome from './Chrome.vue'
 import FilePane from './FilePane.vue'
 import AddressBar from './AddressBar.vue'
-import DefaultToolbar from './presets/DefaultToolbar.vue'
+import DefaultToolbar from './DefaultToolbar.vue'
 
 const props = defineProps<{
   config?: Record<string, any>
