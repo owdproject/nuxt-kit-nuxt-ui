@@ -5,9 +5,47 @@ import {
   addPlugin,
   installModule,
 } from '@nuxt/kit'
+import { existsSync } from 'node:fs'
+import { dirname, resolve as resolvePath } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defu } from 'defu'
 import type { Nuxt } from '@nuxt/schema'
 import { registerTailwindPath } from './kit/registerTailwindPath'
+
+/**
+ * Resolve the installed `@nuxt/ui` `dist` directory. `@nuxt/ui` is ESM-only
+ * (its `exports` map has no `require` condition), so `require.resolve` fails;
+ * use the ESM resolver from this module's location instead.
+ */
+function resolveNuxtUiDistDir(): string | undefined {
+  try {
+    const resolveMeta = (import.meta as ImportMeta & { resolve?: (id: string) => string }).resolve
+    const resolved = resolveMeta?.('@nuxt/ui')
+    if (resolved) {
+      const distDir = dirname(fileURLToPath(resolved))
+      if (existsSync(resolvePath(distDir, 'runtime/ui.config'))) return distDir
+    }
+  } catch {
+    // ignore and fall through
+  }
+  return undefined
+}
+
+/**
+ * Nuxt UI ships its own Tailwind `content` globs, but they can be dropped while
+ * the desktop kit merges theme/app content into the project Tailwind config.
+ * When that happens, classes used only inside Nuxt UI components (e.g.
+ * `inline-flex`, `px-2.5`, `disabled:opacity-75`) are never generated and every
+ * `U*` component renders unstyled. Register the globs explicitly so the merge
+ * cannot lose them.
+ */
+function registerNuxtUiTailwindContent(nuxt: Nuxt): void {
+  const distDir = resolveNuxtUiDistDir()
+  if (!distDir) return
+
+  registerTailwindPath(nuxt, resolvePath(distDir, 'runtime/components/**/*.{vue,mjs,ts}'))
+  registerTailwindPath(nuxt, resolvePath(distDir, 'runtime/ui.config/**/*.{mjs,js,ts}'))
+}
 
 export interface KitNuxtUiModuleOptions {
   /**
@@ -90,6 +128,9 @@ export default defineNuxtModule<KitNuxtUiModuleOptions>({
     await installModule('@nuxt/ui', {
       global: true
     })
+
+    // Keep Nuxt UI's own component classes in the Tailwind scan (see helper).
+    registerNuxtUiTailwindContent(nuxt)
 
     addPlugin({
       src: resolve('./runtime/plugins/01.desktop-nuxt-ui-dialogs.client'),
