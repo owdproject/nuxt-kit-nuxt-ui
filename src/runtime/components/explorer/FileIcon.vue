@@ -34,7 +34,29 @@ const iconSrc = computed(() => {
 </script>
 
 <template>
+  <svg
+    v-if="isDirectory"
+    aria-hidden="true"
+    viewBox="0 0 32 32"
+    class="mx-auto h-8 w-8"
+    fill="none"
+  >
+    <path
+      d="M3.5 8.25A2.75 2.75 0 0 1 6.25 5.5h6.1l2.8 3h10.6a2.75 2.75 0 0 1 2.75 2.75v12.5a2.75 2.75 0 0 1-2.75 2.75H6.25A2.75 2.75 0 0 1 3.5 23.75z"
+      fill="#f2c14e"
+      stroke="#d89d28"
+      stroke-linejoin="round"
+      stroke-width="1.5"
+    />
+    <path
+      d="M4.25 12h23.5"
+      stroke="#ffe08a"
+      stroke-linecap="round"
+      stroke-width="1.5"
+    />
+  </svg>
   <img
+    v-else
     :src="iconSrc"
     draggable="false"
     alt=""

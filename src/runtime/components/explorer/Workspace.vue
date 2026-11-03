@@ -13,6 +13,7 @@ const props = defineProps<{
   config?: Record<string, any>
   window: Record<string, any>
   frameClass?: string
+  chromePadding?: boolean
 }>()
 
 const { t } = useI18n()
@@ -40,6 +41,7 @@ function mapMenuItems(items: any[]) {
   <Frame
     :window="window"
     :frame-class="frameClass"
+    :chrome-padding="chromePadding ?? false"
   >
     <template v-if="$slots.nav" v-slot:nav>
       <slot name="nav" />
